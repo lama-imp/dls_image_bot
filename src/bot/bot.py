@@ -1,17 +1,18 @@
 import logging
+import asyncio
 
 from aiogram import Bot, Dispatcher, executor, types
 
 from src.model.StyleTransfer import StyleTransfer
+from src.bot.config import API_TOKEN
 
-with open('token.txt') as f:
-    API_TOKEN = f.readline().strip()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
+loop = asyncio.get_event_loop()
 
 # Initialize bot and dispatcher
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=API_TOKEN, loop=loop)
 dp = Dispatcher(bot)
 
 
@@ -24,13 +25,14 @@ async def send_welcome(message: types.Message):
 async def echo(message: types.Message):
     print(message.photo[-1].file_id)
     content_name = 'content_{}.jpg'.format(message.from_user.id)
-    a = await bot.download_file_by_id(message.photo[-1].file_id, content_name)
+    await bot.download_file_by_id(message.photo[-1].file_id, content_name)
 
     style_path = 'style2.jpg'
     content_path = content_name
 
     s_transfer = StyleTransfer(style_path, content_path)
-    s_transfer.run_style_transfer()
+    task1 = asyncio.create_task(s_transfer.run_style_transfer())
+    await task1
     s_transfer.save_image('output_{}.jpg'.format(message.from_user.id))
     output = types.InputFile('output_{}.jpg'.format(message.from_user.id))
 
