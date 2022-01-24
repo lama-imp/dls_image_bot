@@ -1,26 +1,28 @@
-import logging
 import asyncio
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from src.model.StyleTransfer import StyleTransfer
-from src.bot.config import API_TOKEN
+from src.bot.config import API_TOKEN, URL_APP, start_image
 from src.bot.messages import MESSAGES
 from src.bot.utils import STStates
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-loop = asyncio.get_event_loop()
 
-# Initialize bot and dispatcher
+loop = asyncio.get_event_loop()
 bot = Bot(token=API_TOKEN, loop=loop)
 dp = Dispatcher(bot, storage=MemoryStorage())
+dp.middleware.setup(LoggingMiddleware())
+
+
+async def on_startup(dp):
+    await bot.set_webhook(URL_APP)
 
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    await message.answer_photo('AgACAgIAAxkBAAN5Yeu3Cg67Vs3D1b1HpCqcrfz0fU8AAue5MRvYwmBLRO6y1jaLRhkBAAMCAAN4AAMjBA', caption=MESSAGES['start'])
+    await message.answer_photo(start_image, caption=MESSAGES['start'])
 
 
 @dp.message_handler(commands=['help'])
@@ -76,4 +78,11 @@ async def unknown_message(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    executor.start_webhook(
+        dispatcher=dp,
+        webhook_path='',
+        on_startup=on_startup,
+        skip_updates=True,
+        host="0.0.0.0",
+        port=3001,
+    )
