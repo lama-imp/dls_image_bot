@@ -2,10 +2,12 @@ import logging
 import asyncio
 
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from src.model.StyleTransfer import StyleTransfer
 from src.bot.config import API_TOKEN
-
+from src.bot.messages import MESSAGES
+from src.bot.utils import STStates
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -13,21 +15,40 @@ loop = asyncio.get_event_loop()
 
 # Initialize bot and dispatcher
 bot = Bot(token=API_TOKEN, loop=loop)
-dp = Dispatcher(bot)
+dp = Dispatcher(bot, storage=MemoryStorage())
 
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+    await message.answer_photo('AgACAgIAAxkBAAN5Yeu3Cg67Vs3D1b1HpCqcrfz0fU8AAue5MRvYwmBLRO6y1jaLRhkBAAMCAAN4AAMjBA', caption=MESSAGES['start'])
 
 
-@dp.message_handler(content_types=types.ContentType.ANY)
-async def echo(message: types.Message):
+@dp.message_handler(commands=['help'])
+async def send_welcome(message: types.Message):
+    await message.reply(MESSAGES['help'])
+
+
+@dp.message_handler(commands=['set_style'])
+async def set_style_transfer(message: types.Message):
+    await STStates.style.set()
+    await message.reply(MESSAGES['style'])
+
+
+@dp.message_handler(content_types=types.ContentType.PHOTO, state=STStates.style)
+async def set_style_image(message: types.Message):
+    style_name = 'style_{}.jpg'.format(message.from_user.id)
+    await bot.download_file_by_id(message.photo[-1].file_id, style_name)
+    await STStates.next()
+    await bot.send_message(message.chat.id, MESSAGES['content'])
+
+
+@dp.message_handler(content_types=types.ContentType.PHOTO, state=STStates.content)
+async def img_style_transfer(message: types.Message):
     print(message.photo[-1].file_id)
     content_name = 'content_{}.jpg'.format(message.from_user.id)
     await bot.download_file_by_id(message.photo[-1].file_id, content_name)
 
-    style_path = 'style2.jpg'
+    style_path = 'style_{}.jpg'.format(message.from_user.id)
     content_path = content_name
 
     s_transfer = StyleTransfer(style_path, content_path)
@@ -37,6 +58,21 @@ async def echo(message: types.Message):
     output = types.InputFile('output_{}.jpg'.format(message.from_user.id))
 
     await message.answer_photo(output)
+
+
+@dp.message_handler(content_types=types.ContentType.ANY, state=STStates.style)
+async def not_supported_style(message: types.Message):
+    await bot.send_message(message.chat.id, MESSAGES['not_supported_style'])
+
+
+@dp.message_handler(content_types=types.ContentType.ANY, state=STStates.content)
+async def not_supported_content(message: types.Message):
+    await bot.send_message(message.chat.id, MESSAGES['not_supported_content'])
+
+
+@dp.message_handler(content_types=types.ContentType.ANY, state=None)
+async def unknown_message(message: types.Message):
+    await bot.send_message(message.chat.id, MESSAGES['unknown'])
 
 
 if __name__ == '__main__':
