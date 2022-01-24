@@ -135,4 +135,3 @@ src/bot/token.txt
 *.jpg
 Pipfile
 Pipfile.lock
-config.py

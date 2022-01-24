@@ -1,15 +1,17 @@
 import asyncio
+import os
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from src.model.StyleTransfer import StyleTransfer
-from src.bot.config import API_TOKEN, URL_APP, start_image
+from src.bot.config import URL_APP, start_image
 from src.bot.messages import MESSAGES
 from src.bot.utils import STStates
 
 
+API_TOKEN = os.getenv('TOKEN')
 loop = asyncio.get_event_loop()
 bot = Bot(token=API_TOKEN, loop=loop)
 dp = Dispatcher(bot, storage=MemoryStorage())
