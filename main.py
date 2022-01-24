@@ -1,11 +1,14 @@
-from src.model.StyleTransfer import StyleTransfer
+from aiogram import executor
+
+from src.bot.bot import dp, on_startup
+
 
 if __name__ == '__main__':
-
-    style_path = 'style2.jpg'
-    content_path = 'cat.jpg'
-
-    s_transfer = StyleTransfer(style_path, content_path)
-    s_transfer.run_style_transfer(num_steps=100)
-    s_transfer.save_image('new.jpg')
-    s_transfer.to_pil()
+    executor.start_webhook(
+        dispatcher=dp,
+        webhook_path='',
+        on_startup=on_startup,
+        skip_updates=True,
+        host="0.0.0.0",
+        port=3001,
+    )
