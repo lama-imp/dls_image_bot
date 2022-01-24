@@ -13,7 +13,7 @@ multidict==5.2.0
 numpy==1.22.1
 Pillow==9.0.0
 pytz==2021.3
-torch==1.10.1
+http://download.pytorch.org/whl/cpu/torch-1.9.1%2Bcpu-cp39-cp39-linux_x86_64.whl
 torchvision==0.11.2
 tqdm==4.62.3
 typing-extensions==4.0.1
