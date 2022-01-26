@@ -56,8 +56,7 @@ async def img_style_transfer(message: types.Message):
     content_path = content_name
 
     s_transfer = StyleTransfer(style_path, content_path)
-    task1 = asyncio.create_task(s_transfer.run_style_transfer())
-    await task1
+    s_transfer.run_style_transfer()
     s_transfer.save_image('output_{}.jpg'.format(message.from_user.id))
     output = types.InputFile('output_{}.jpg'.format(message.from_user.id))
 
