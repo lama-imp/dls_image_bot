@@ -6,20 +6,21 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from src.model.StyleTransfer import StyleTransfer
-from src.bot.config import URL_APP, start_image
+from src.bot.config import (BOT_TOKEN, start_image,
+                            WEBHOOK_URL, WEBHOOK_PATH,
+                            WEBAPP_HOST, WEBAPP_PORT)
 from src.bot.messages import MESSAGES
 from src.bot.utils import STStates
 
 
-API_TOKEN = os.getenv('TOKEN')
 loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop)
+bot = Bot(token=BOT_TOKEN, loop=loop)
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 
 
 async def on_startup(dp):
-    await bot.set_webhook(URL_APP)
+    await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
 
 
 @dp.message_handler(commands=['start'])
@@ -79,12 +80,12 @@ async def unknown_message(message: types.Message):
     await bot.send_message(message.chat.id, MESSAGES['unknown'])
 
 
-if __name__ == '__main__':
+def main():
     executor.start_webhook(
         dispatcher=dp,
-        webhook_path='',
-        on_startup=on_startup,
+        webhook_path=WEBHOOK_PATH,
         skip_updates=True,
-        host="0.0.0.0",
-        port=3001,
+        on_startup=on_startup,
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT,
     )
