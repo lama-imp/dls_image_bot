@@ -19,6 +19,7 @@ dp.middleware.setup(LoggingMiddleware())
 
 
 async def on_startup(dispatcher: Dispatcher) -> None:
+    await bot.delete_webhook()
     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
 
 
