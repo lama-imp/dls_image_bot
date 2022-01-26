@@ -5,9 +5,10 @@ start_image = 'AgACAgIAAxkBAAN5Yeu3Cg67Vs3D1b1HpCqcrfz0fU8AAue5MRvYwmBLRO6y1jaLR
 
 # webhook settings
 BOT_TOKEN = os.getenv('TOKEN')
-WEBHOOK_HOST = 'https://dls-nst-bot.herokuapp.com/'
-WEBHOOK_PATH = f'/webhook/{BOT_TOKEN}'
-WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
+WEBHOOK_HOST = 'https://dls-nst-bot.herokuapp.com'
+WEBHOOK_PORT = 8443
+WEBHOOK_PATH = '/webhook'
+WEBHOOK_URL = f'{WEBHOOK_HOST}:{WEBHOOK_PORT}{WEBHOOK_PATH}'
 
 # webserver settings
 WEBAPP_HOST = '0.0.0.0'
