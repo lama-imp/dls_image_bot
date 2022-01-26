@@ -83,7 +83,7 @@ async def unknown_message(message: types.Message):
 def start_bot():
     executor.start_webhook(
         dispatcher=dp,
-        webhook_path=WEBHOOK_URL,
+        webhook_path=f'/{BOT_TOKEN}',
         skip_updates=True,
         on_startup=on_startup,
         host=WEBAPP_HOST,
