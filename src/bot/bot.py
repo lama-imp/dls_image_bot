@@ -51,6 +51,7 @@ async def img_style_transfer(message: types.Message):
     print(message.photo[-1].file_id)
     content_name = 'content_{}.jpg'.format(message.from_user.id)
     await bot.download_file_by_id(message.photo[-1].file_id, content_name)
+    await message.reply('Выполняю...')
 
     style_path = 'style_{}.jpg'.format(message.from_user.id)
     content_path = content_name
