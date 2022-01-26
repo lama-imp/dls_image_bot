@@ -80,7 +80,7 @@ async def unknown_message(message: types.Message):
     await bot.send_message(message.chat.id, MESSAGES['unknown'])
 
 
-def main():
+def start_bot():
     executor.start_webhook(
         dispatcher=dp,
         webhook_path=WEBHOOK_PATH,
