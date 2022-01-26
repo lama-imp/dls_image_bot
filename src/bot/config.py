@@ -8,7 +8,7 @@ BOT_TOKEN = os.getenv('TOKEN')
 WEBHOOK_HOST = 'https://dls-nst-bot.herokuapp.com'
 WEBHOOK_PORT = 8443
 WEBHOOK_PATH = '/webhook'
-WEBHOOK_URL = f'{WEBHOOK_HOST}:{WEBHOOK_PORT}{WEBHOOK_PATH}'
+WEBHOOK_URL = f'{WEBHOOK_HOST}/{BOT_TOKEN}'
 
 # webserver settings
 WEBAPP_HOST = '0.0.0.0'
