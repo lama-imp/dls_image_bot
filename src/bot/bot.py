@@ -6,7 +6,7 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from src.model.StyleTransfer import StyleTransfer
 from src.bot.config import (BOT_TOKEN, start_image,
-                            # WEBHOOK_URL, WEBHOOK_PATH,
+                            WEBHOOK_URL, WEBHOOK_PATH,
                             WEBAPP_HOST, WEBAPP_PORT)
 from src.bot.messages import MESSAGES
 from src.bot.utils import STStates
