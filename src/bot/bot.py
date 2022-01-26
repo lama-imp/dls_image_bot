@@ -6,8 +6,7 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from src.model.StyleTransfer import StyleTransfer
 from src.bot.config import (BOT_TOKEN, start_image,
-                            WEBHOOK_URL, WEBHOOK_PATH,
-                            WEBAPP_HOST, WEBAPP_PORT)
+                            WEBHOOK_HOST, WEBAPP_HOST, WEBAPP_PORT)
 from src.bot.messages import MESSAGES
 from src.bot.utils import STStates
 
@@ -20,7 +19,7 @@ dp.middleware.setup(LoggingMiddleware())
 
 async def on_startup(dispatcher: Dispatcher) -> None:
     await bot.delete_webhook()
-    await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
+    await bot.set_webhook(WEBHOOK_HOST, drop_pending_updates=True)
 
 
 @dp.message_handler(commands=['start'])
