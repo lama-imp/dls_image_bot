@@ -79,12 +79,5 @@ async def unknown_message(message: types.Message):
     await bot.send_message(message.chat.id, MESSAGES['unknown'])
 
 
-if __name__ == '__main__':
-    executor.start_webhook(
-        dispatcher=dp,
-        webhook_path='',
-        on_startup=on_startup,
-        skip_updates=True,
-        host="0.0.0.0",
-        port=3001,
-    )
+def start_bot():
+    executor.start_polling(dp, skip_updates=True)
