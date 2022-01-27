@@ -74,4 +74,4 @@ async def unknown_message(message: types.Message):
 
 
 def start_bot():
-    executor.start_polling(dp, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
