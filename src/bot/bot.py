@@ -1,23 +1,28 @@
 import os
-import aiogram
+import asyncio
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
-from src.model.StyleTransfer import StyleTransfer
+from src.model.StyleTransfer import style_transfer_func
 from src.bot.config import BOT_TOKEN, start_image
 from src.bot.messages import MESSAGES
 from src.bot.utils import STStates
 
 
-bot = Bot(token=BOT_TOKEN)
+loop = asyncio.get_event_loop()
+bot = Bot(token=BOT_TOKEN, loop=loop)
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 
 
 async def on_startup(dp):
     await bot.delete_webhook()
+
+
+async def async_st(loop, style_transfer, *args):
+    await loop.run_in_executor(None, style_transfer, *args)
 
 
 @dp.message_handler(state='*', commands=['start'])
@@ -53,10 +58,12 @@ async def img_style_transfer(message: types.Message):
     style_path = 'style_{}.jpg'.format(message.from_user.id)
     content_path = content_name
 
-    s_transfer = StyleTransfer(style_path, content_path)
-    # s_transfer.run_style_transfer()
+    bot_msg = await bot.send_message(message.from_user.id, 'Выполняю...')
+
     output_name = 'output_{}.jpg'.format(message.from_user.id)
-    s_transfer.save_image(output_name)
+    await async_st(loop, style_transfer_func, style_path, content_path, output_name)
+    await bot.delete_message(message.from_user.id, bot_msg.message_id)
+
     output = types.InputFile(output_name)
 
     await message.answer_photo(output)
