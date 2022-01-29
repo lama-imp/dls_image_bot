@@ -6,7 +6,8 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from src.model.StyleTransfer import style_transfer_func
-from src.bot.config import BOT_TOKEN, start_image
+from src.bot.config import (BOT_TOKEN, start_image,
+                            WEBHOOK_HOST, WEBAPP_HOST, WEBAPP_PORT)
 from src.bot.messages import MESSAGES
 from src.bot.utils import STStates
 
@@ -19,6 +20,7 @@ dp.middleware.setup(LoggingMiddleware())
 
 async def on_startup(dp):
     await bot.delete_webhook()
+    await bot.set_webhook(WEBHOOK_HOST, drop_pending_updates=True)
 
 
 async def async_st(loop, style_transfer, *args):
@@ -88,4 +90,11 @@ async def unknown_message(message: types.Message):
 
 
 def start_bot():
-    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
+    executor.start_webhook(
+        dispatcher=dp,
+        webhook_path='',
+        skip_updates=True,
+        on_startup=on_startup,
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT,
+    )
