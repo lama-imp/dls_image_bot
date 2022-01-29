@@ -11,6 +11,7 @@ not_supported_style_message = '''Я могу работать только с и
 not_supported_content_message = '''Я могу работать только с изображениями.
 Отправьте изображение, на которое хотите перенести стиль'''
 unknown_message = '''Не понимаю.\nОтправьте команду /help, чтобы посмотреть объяснение моей работы'''
+processing_message = '''Выполняю, обработка изображения занимает примерно 10 минут...'''
 
 
 MESSAGES = {
@@ -21,4 +22,5 @@ MESSAGES = {
     'not_supported_style': not_supported_style_message,
     'not_supported_content': not_supported_content_message,
     'unknown': unknown_message,
+    'processing': processing_message,
 }

@@ -58,7 +58,7 @@ async def img_style_transfer(message: types.Message):
     style_path = 'style_{}.jpg'.format(message.from_user.id)
     content_path = content_name
 
-    bot_msg = await bot.send_message(message.from_user.id, 'Выполняю...')
+    bot_msg = await bot.send_message(message.from_user.id, MESSAGES['processing'])
 
     output_name = 'output_{}.jpg'.format(message.from_user.id)
     await async_st(loop, style_transfer_func, style_path, content_path, output_name)
