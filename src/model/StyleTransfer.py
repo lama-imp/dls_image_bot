@@ -17,7 +17,7 @@ class StyleTransfer:
 
     def __init__(self, style_path, content_path):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.imsize = 512 # if torch.cuda.is_available() else 128
+        self.imsize = 512 if torch.cuda.is_available() else 128
         self.style_img = self.image_loader(style_path)
         self.content_img = self.image_loader(content_path)
         self.input_img = self.content_img.clone()
