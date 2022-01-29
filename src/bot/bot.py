@@ -1,3 +1,6 @@
+import os
+import aiogram
+
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
@@ -51,11 +54,15 @@ async def img_style_transfer(message: types.Message):
     content_path = content_name
 
     s_transfer = StyleTransfer(style_path, content_path)
-    s_transfer.run_style_transfer()
-    s_transfer.save_image('output_{}.jpg'.format(message.from_user.id))
-    output = types.InputFile('output_{}.jpg'.format(message.from_user.id))
+    # s_transfer.run_style_transfer()
+    output_name = 'output_{}.jpg'.format(message.from_user.id)
+    s_transfer.save_image(output_name)
+    output = types.InputFile(output_name)
 
     await message.answer_photo(output)
+
+    os.remove(content_name)
+    os.remove(output_name)
 
 
 @dp.message_handler(content_types=types.ContentType.ANY, state=STStates.style)
