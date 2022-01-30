@@ -131,7 +131,7 @@ dmypy.json
 # IDE
 .idea/
 
-app/src/bot/token.txt
+src/bot/token.txt
 *.jpg
 Pipfile
 Pipfile.lock
