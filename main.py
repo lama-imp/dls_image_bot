@@ -1,4 +1,4 @@
-from app.src.bot.bot import start_bot
+from src.bot.bot import start_bot
 
 
 if __name__ == '__main__':
