@@ -133,5 +133,5 @@ dmypy.json
 
 app/src/bot/token.txt
 *.jpg
-#Pipfile
-#Pipfile.lock
+Pipfile
+Pipfile.lock

@@ -5,10 +5,10 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
-from app.src.model.StyleTransfer import style_transfer_func
-from app.src.bot.config import BOT_TOKEN, start_image
-from app.src.bot.messages import MESSAGES
-from app.src.bot.utils import STStates
+from src.model.StyleTransfer import style_transfer_func
+from src.bot.config import BOT_TOKEN, start_image
+from src.bot.messages import MESSAGES
+from src.bot.utils import STStates
 
 
 loop = asyncio.get_event_loop()

@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from app.src.model.Losses import StyleLoss, ContentLoss
-from app.src.model.Normalization import Normalization
+from src.model.Losses import StyleLoss, ContentLoss
+from src.model.Normalization import Normalization
 
 from PIL import Image
 

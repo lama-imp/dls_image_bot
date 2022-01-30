@@ -1,0 +1,3 @@
+5050844949:AAFstcz4wvwYOM4ruwFMLYqJtOqhXf152N4
+with open('src/bot/token.txt') as f:
+    API_TOKEN = f.readline().strip()
