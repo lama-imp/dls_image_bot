@@ -14,8 +14,15 @@ import torchvision.utils as utils
 
 
 class StyleTransfer:
+    '''
+    This class receives two images and performs style transfer
+    using Gatys algorithm and pretrained VGG19.
 
-    def __init__(self, style_path, content_path):
+    style_path (str)   : path to the style image
+    content_path (str) : path to the content image
+    '''
+
+    def __init__(self, style_path: str, content_path: str):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.imsize = 512 if torch.cuda.is_available() else 128
         self.style_img = self.image_loader(style_path)
@@ -26,12 +33,18 @@ class StyleTransfer:
         self.cnn_norm_mean = torch.tensor([0.485, 0.456, 0.406]).to(self.device)
         self.cnn_norm_std = torch.tensor([0.229, 0.224, 0.225]).to(self.device)
 
+        # This algorithm works only with images of same size
+        # We need to check if the style image has same size as the content image
+        # and resize it if necessary
         if self.style_img.size() != self.content_img.size():
             self.style_img = transforms.Resize(self.content_img.size()[2:])(self.style_img)
 
         self.model, self.style_losses, self.content_losses = self.get_style_model_and_losses()
 
-    def image_loader(self, image_name):
+    def image_loader(self, image_name: str):
+        '''
+        Method to load images from the paths and convert them to tensor
+        '''
         loader = transforms.Compose([
                                     transforms.Resize(self.imsize),
                                     transforms.ToTensor()])
@@ -44,6 +57,9 @@ class StyleTransfer:
         return optimizer
 
     def get_style_model_and_losses(self):
+        '''
+        Creating our model from layers of VGG19
+        '''
         normalization = Normalization(self.cnn_norm_mean, self.cnn_norm_std).to(self.device)
 
         content_layers = ['conv_4']
@@ -90,14 +106,15 @@ class StyleTransfer:
         return model, style_losses, content_losses
 
     def run_style_transfer(self, num_steps=300, style_weight=1000000, content_weight=1):
-        print('Building the style transfer model...')
+        '''
+        Main method that actually performs the style transfer
+        '''
 
         self.input_img.requires_grad_(True)
         self.model.requires_grad_(False)
 
         optimizer = self.get_input_optimizer()
 
-        print('Optimizing...')
         run = [0]
         while run[0] <= num_steps:
 
@@ -122,12 +139,6 @@ class StyleTransfer:
                 loss.backward()
 
                 run[0] += 1
-                if run[0] % 50 == 0:
-                    print('run {}'.format(run))
-                    print('Style loss: {:4f} Content loss: {:4f}'.format(
-                        style_score.item(), content_score.item()
-                    ))
-                    print()
 
                 return style_score + content_score
 
@@ -139,14 +150,28 @@ class StyleTransfer:
         return self.input_img
 
     def save_image(self, path='output.jpg'):
+        '''
+        Save output image as jpg file
+        '''
         utils.save_image(self.input_img, path)
 
     def to_pil(self):
+        '''
+        Convert tensor to PIL image
+        '''
         print(self.input_img.shape)
         return torchvision.transforms.functional.to_pil_image(self.input_img.squeeze())
 
 
-def style_transfer_func(style_path, content_path, output_name):
+def style_transfer_func(style_path: str, content_path: str, output_name: str) -> None:
+    '''
+    Function to be used in the bot.
+    Creates a StyleTransfer object, perfoms style transfer and save an output image.
+
+    style_path (str)   : path to the style image
+    content_path (str) : path to the content image
+    output_name (str)  : name of the output image file
+    '''
     s_transfer = StyleTransfer(style_path, content_path)
     s_transfer.run_style_transfer()
     s_transfer.save_image(output_name)
